@@ -1,14 +1,20 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const HotelsController = require('../controllers/hotelsController');
+const db = require("../db/mysql.js");
 
-const hotelsController = new HotelsController();
-
-router.get('/recommendations', (req, res) => {
-    const keyword = req.query.keyword;
-    hotelsController.getRecommendedHotels(keyword)
-        .then(hotels => res.json(hotels))
-        .catch(err => res.status(500).json({ error: err.message }));
+router.get("/recommendations", (req, res) => {
+  const keyword = req.query.keyword || "";
+  db.all(
+    "SELECT name, city, address, stars, phone FROM hotels WHERE name LIKE ?",
+    [`%${keyword}%`],
+    (err, rows) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+      res.json(rows);
+    }
+  );
 });
 
 module.exports = router;

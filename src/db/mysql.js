@@ -1,18 +1,12 @@
-const mysql = require('mysql');
+const sqlite3 = require("sqlite3").verbose();
 
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'your_username',
-    password: 'your_password',
-    database: 'hotel_recommendation'
-});
-
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        return;
-    }
-    console.log('Connected to the MySQL database.');
+// 连接本地数据库文件（如 hotel.db）
+const db = new sqlite3.Database("./hotel.db", (err) => {
+  if (err) {
+    console.error("Error connecting to the SQLite database:", err);
+    return;
+  }
+  console.log("Connected to the SQLite database.");
 });
 
 module.exports = db;
